@@ -2,8 +2,7 @@
     x:Class="ChartWatcher.UI.Windows.PickerWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    Title="Pick Element">
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls">
 
     <Grid Background="{ThemeResource BackgroundPrimary}">
         <Grid.RowDefinitions>

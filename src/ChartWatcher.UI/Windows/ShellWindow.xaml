@@ -4,10 +4,50 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:local="using:ChartWatcher.UI.Windows"
-    xmlns:uc="using:ChartWatcher.UI.Controls"
-    Title="Chart Watcher">
+    xmlns:uc="using:ChartWatcher.UI.Controls">
 
     <Grid Background="{ThemeResource BackgroundPrimary}">
+        <Grid.Resources>
+            <!-- Source list item template -->
+            <DataTemplate x:Key="SourceItemTemplate">
+                <Grid Padding="4,6" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Ellipse Width="8" Height="8" Fill="{ThemeResource StatusDotReady}"
+                             VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="SSI iBoard"
+                               FontSize="{ThemeResource FontSizeCaption}"
+                               Foreground="{ThemeResource ForegroundPrimary}"
+                               VerticalAlignment="Center" />
+                    <Button Grid.Column="2" Padding="4,2"
+                            Style="{ThemeResource SubtleButtonStyle}">
+                        <FontIcon Glyph="&#xE72C;" FontSize="10"
+                                  Foreground="{ThemeResource ForegroundDim}" />
+                    </Button>
+                </Grid>
+            </DataTemplate>
+
+            <!-- Library item template -->
+            <DataTemplate x:Key="LibraryItemTemplate">
+                <Grid Padding="4,6" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE8A5;" FontSize="12"
+                              Foreground="{ThemeResource AccentBrush}"
+                              VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="Component"
+                               FontSize="{ThemeResource FontSizeCaption}"
+                               Foreground="{ThemeResource ForegroundPrimary}"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </DataTemplate>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />     <!-- Toolbar -->
             <RowDefinition Height="*" />         <!-- Main content -->
@@ -434,46 +474,5 @@
             </Border>
         </Grid>
     </Grid>
-
-    <Window.Resources>
-        <!-- Source list item template -->
-        <DataTemplate x:Key="SourceItemTemplate">
-            <Grid Padding="4,6" ColumnSpacing="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Ellipse Width="8" Height="8" Fill="{ThemeResource StatusDotReady}"
-                         VerticalAlignment="Center" />
-                <TextBlock Grid.Column="1" Text="SSI iBoard"
-                           FontSize="{ThemeResource FontSizeCaption}"
-                           Foreground="{ThemeResource ForegroundPrimary}"
-                           VerticalAlignment="Center" />
-                <Button Grid.Column="2" Padding="4,2"
-                        Style="{ThemeResource SubtleButtonStyle}">
-                    <FontIcon Glyph="&#xE72C;" FontSize="10"
-                              Foreground="{ThemeResource ForegroundDim}" />
-                </Button>
-            </Grid>
-        </DataTemplate>
-
-        <!-- Library item template -->
-        <DataTemplate x:Key="LibraryItemTemplate">
-            <Grid Padding="4,6" ColumnSpacing="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <FontIcon Glyph="&#xE8A5;" FontSize="12"
-                          Foreground="{ThemeResource AccentBrush}"
-                          VerticalAlignment="Center" />
-                <TextBlock Grid.Column="1" Text="Component"
-                           FontSize="{ThemeResource FontSizeCaption}"
-                           Foreground="{ThemeResource ForegroundPrimary}"
-                           VerticalAlignment="Center" />
-            </Grid>
-        </DataTemplate>
-    </Window.Resources>
 
 </Window>
