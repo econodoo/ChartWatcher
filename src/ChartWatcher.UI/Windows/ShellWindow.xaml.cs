@@ -404,7 +404,6 @@ public sealed partial class ShellWindow : Window
             Log.Information("Component created: {Title} ({Type}, {Selectors} selectors)",
                 component.Title, type, component.Selectors.Count);
         }
-        }
     }
 
     // ───────── INSPECTOR BINDING ─────────
