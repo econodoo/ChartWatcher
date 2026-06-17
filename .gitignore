@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.db
+*.db-shm
+*.db-wal
+logs/
+packages/
+_ReSharper*/
+*.DotSettings.user
+launchSettings.json

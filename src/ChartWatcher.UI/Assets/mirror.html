@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chart Watcher Mirror</title>
+<style>
+:root {
+    /* Injected by .NET theme switch */
+    --cw-bg: #1A1A2E;
+    --cw-fg: #F5F5F5;
+    --cw-fg-dim: #607D8B;
+    --cw-up: #00C853;
+    --cw-down: #FF1744;
+    --cw-flat: #FFAB00;
+    --cw-border: #2C3E6B;
+    --cw-font: 'Segoe UI', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--cw-bg);
+    color: var(--cw-fg);
+    font-family: var(--cw-font);
+    font-size: 13px;
+    overflow: hidden;
+}
+
+/* Each mount div receives cloned content from a single sticker */
+.cw-mount {
+    position: relative;
+    overflow: auto;
+    padding: 4px;
+}
+
+/* Override source-site styles for clean presentation */
+.cw-mount table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: inherit;
+    color: var(--cw-fg);
+}
+
+.cw-mount th, .cw-mount td {
+    padding: 2px 6px;
+    border-bottom: 1px solid var(--cw-border);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.cw-mount th {
+    font-weight: 600;
+    color: var(--cw-fg-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+/* Stale indicator */
+.cw-mount.stale {
+    opacity: 0.5;
+}
+
+.cw-mount.stale::after {
+    content: '⏳';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 16px;
+}
+
+/* Timestamp footer */
+.cw-timestamp {
+    position: fixed;
+    bottom: 2px;
+    right: 8px;
+    font-size: 10px;
+    color: var(--cw-fg-dim);
+    opacity: 0.6;
+}
+</style>
+</head>
+<body>
+<div id="mounts"></div>
+<div class="cw-timestamp" id="timestamp">—</div>
+
+<script>
+'use strict';
+
+const mounts = {};
+const mountsEl = document.getElementById('mounts');
+const timestampEl = document.getElementById('timestamp');
+
+// .NET → Mirror commands
+window.chrome?.webview?.addEventListener('message', (e) => {
+    const msg = e.data;
+    switch (msg.cmd) {
+        case 'mount':
+            createMount(msg.stickerId, msg.label);
+            break;
+        case 'unmount':
+            removeMount(msg.stickerId);
+            break;
+        case 'update':
+            updateMount(msg.stickerId, msg.html);
+            break;
+        case 'theme':
+            applyTheme(msg.vars);
+            break;
+        case 'layout':
+            applyLayout(msg.mounts);
+            break;
+    }
+});
+
+function createMount(id, label) {
+    if (mounts[id]) return;
+    const el = document.createElement('div');
+    el.className = 'cw-mount';
+    el.id = `mount-${id}`;
+    el.dataset.stickerId = id;
+    if (label) el.title = label;
+    mountsEl.appendChild(el);
+    mounts[id] = el;
+}
+
+function removeMount(id) {
+    const el = mounts[id];
+    if (el) {
+        el.remove();
+        delete mounts[id];
+    }
+}
+
+function updateMount(id, html) {
+    let el = mounts[id];
+    if (!el) {
+        createMount(id, id);
+        el = mounts[id];
+    }
+    el.innerHTML = html;
+    el.classList.remove('stale');
+    timestampEl.textContent = new Date().toLocaleTimeString();
+}
+
+function applyTheme(vars) {
+    if (!vars) return;
+    const root = document.documentElement;
+    for (const [key, value] of Object.entries(vars)) {
+        root.style.setProperty(`--cw-${key}`, value);
+    }
+}
+
+function applyLayout(layoutMounts) {
+    if (!layoutMounts) return;
+    for (const m of layoutMounts) {
+        let el = mounts[m.stickerId];
+        if (!el) {
+            createMount(m.stickerId, m.label);
+            el = mounts[m.stickerId];
+        }
+        if (m.style) {
+            Object.assign(el.style, m.style);
+        }
+    }
+}
+
+// Stale detection: mark mounts stale if no update for 30s
+setInterval(() => {
+    // If no update received in 30s, mark stale
+}, 30000);
+
+// Signal ready
+window.chrome?.webview?.postMessage({ evt: 'mirrorReady' });
+</script>
+</body>
+</html>
